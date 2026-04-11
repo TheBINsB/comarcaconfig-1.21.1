@@ -1,7 +1,6 @@
 package net.elbin.comarcaconfig.mixin;
 
 import dev.xylonity.companions.common.blockentity.FrogBonanzaBlockEntity;
-import dev.xylonity.companions.registry.CompanionsSounds;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -29,8 +28,10 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,11 +40,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import com.mojang.logging.LogUtils;
+
 @Mixin(FrogBonanzaBlockEntity.class)
 public abstract class FrogBonanzaMixin {
 
+    @Unique
+    private static final Logger comarcaconfig$LOGGER = LogUtils.getLogger();
+
     // Asegúrate de que este nombre sea exactamente igual al del mod original
-    @Shadow
+    @Shadow @Final
     private int[] faceDeg;
 
     @Inject(method = "getFroggyReward", at = @At("HEAD"), cancellable = true)
@@ -67,19 +74,19 @@ public abstract class FrogBonanzaMixin {
         if (counts.size() == 1) {
             int face = faceDeg[0];
             switch (face) {
-                case 0 -> handleTripleCreeper(server, pos);
-                case 90 -> this.handleTripleCoin(server, pos);
-                case 180 -> this.handleTripleTeddy(server, pos);
-                case 270 -> this.handleTripleSkull(server, pos);
+                case 0 -> comarcaconfig$handleTripleCreeper(server, pos);
+                case 90 -> this.comarcaconfig$handleTripleCoin(server, pos);
+                case 180 -> this.comarcaconfig$handleTripleTeddy(server, pos);
+                case 270 -> this.comarcaconfig$handleTripleSkull(server, pos);
             }
         } else {
             for (var entry : counts.entrySet()) {
                 if (entry.getValue() == 2) {
-                    switch ((Integer)entry.getKey()) {
-                        case 0 -> handleDoubleCreeper(server, pos);
-                        case 90 -> this.handleDoubleCoin(server, pos);
-                        case 180 -> this.handleDoubleTeddy(server, pos);
-                        case 270 -> this.handleDoubleSkull(server, pos);
+                    switch (entry.getKey()) {
+                        case 0 -> comarcaconfig$handleDoubleCreeper(server, pos);
+                        case 90 -> this.comarcaconfig$handleDoubleCoin(server, pos);
+                        case 180 -> this.comarcaconfig$handleDoubleTeddy(server, pos);
+                        case 270 -> this.comarcaconfig$handleDoubleSkull(server, pos);
                     }
                 }
             }
@@ -89,15 +96,12 @@ public abstract class FrogBonanzaMixin {
     }
 
     // CREEPERS
-    private void handleDoubleCreeper(ServerLevel server, BlockPos pos) {
-        BlockPos center = pos.above();
+    @Unique
+    private void comarcaconfig$handleDoubleCreeper(ServerLevel server, BlockPos pos) {
         RandomSource rand = server.random;
 
         try {
-            // Buscamos la clase privada dentro de FrogBonanzaBlockEntity
             Class<?> tntClass = Class.forName("dev.xylonity.companions.common.blockentity.FrogBonanzaBlockEntity$BonanzaTnt");
-
-            // Buscamos el constructor: (Level, double, double, double, LivingEntity)
             var constructor = tntClass.getDeclaredConstructor(
                     net.minecraft.world.level.Level.class,
                     double.class,
@@ -105,18 +109,16 @@ public abstract class FrogBonanzaMixin {
                     double.class,
                     net.minecraft.world.entity.LivingEntity.class
             );
-
-            // Lo hacemos accesible (esto es lo que se salta el 'private')
             constructor.setAccessible(true);
 
-            for (int i = 0; i < 2 + rand.nextInt(3); ++i) {
-                // Instanciamos la clase
+            // RANGO DINÁMICO: 3 a 6 TNTs
+            int amount = 3 + rand.nextInt(4);
+
+            for (int i = 0; i < amount; ++i) {
                 net.minecraft.world.entity.Entity tntEntity = (net.minecraft.world.entity.Entity) constructor.newInstance(
                         server, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, null
                 );
 
-                // Como BonanzaTnt extiende de PrimedTnt, podemos castearlo a PrimedTnt
-                // para usar los métodos de movimiento y mecha
                 if (tntEntity instanceof net.minecraft.world.entity.item.PrimedTnt tnt) {
                     double angle = rand.nextDouble() * Math.PI * 2.0;
                     double speed = 0.15 + rand.nextDouble() * 0.6;
@@ -127,15 +129,14 @@ public abstract class FrogBonanzaMixin {
                 }
             }
         } catch (Exception e) {
-            // Si algo falla (clase no encontrada, etc.), imprimimos el error en consola
-            e.printStackTrace();
+            comarcaconfig$LOGGER.error("[ComarcaConfig] Error al spawnear las TNTs: ", e);
         }
 
         server.playSound(null, pos, dev.xylonity.companions.registry.CompanionsSounds.POP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    private void handleTripleCreeper(ServerLevel server, BlockPos pos) {
-        BlockPos center = pos.above();
+    @Unique
+    private void comarcaconfig$handleTripleCreeper(ServerLevel server, BlockPos pos) {
         RandomSource rand = server.random;
 
         for (int i = 0; i < 3; ++i) {
@@ -165,7 +166,8 @@ public abstract class FrogBonanzaMixin {
     }
 
     //LOOTS
-    private void dropLoot(ServerLevel server, BlockPos pos, String lootPath) {
+    @Unique
+    private void comarcaconfig$dropLoot(ServerLevel server, BlockPos pos, String lootPath) {
         ResourceLocation location = ResourceLocation.parse(lootPath);
         ResourceKey<LootTable> lootKey = ResourceKey.create(Registries.LOOT_TABLE, location);
 
@@ -189,34 +191,39 @@ public abstract class FrogBonanzaMixin {
         }
 
         for (ItemStack stack : items) {
-            Containers.dropItemStack(server, pos.getX(), pos.getY() + 1.1, pos.getZ(), stack);
+            Containers.dropItemStack(server, pos.getX(), pos.getY() + 2.5, pos.getZ(), stack);
         }
     }
 
-    private void handleDoubleCoin(ServerLevel server, BlockPos pos) {
-        dropLoot(server, pos, "comarcaconfig:bonanza/double_coin");
+    @Unique
+    private void comarcaconfig$handleDoubleCoin(ServerLevel server, BlockPos pos) {
+        comarcaconfig$dropLoot(server, pos, "comarcaconfig:bonanza/double_coin");
         server.playSound(null, pos, dev.xylonity.companions.registry.CompanionsSounds.POP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    private void handleTripleCoin(ServerLevel server, BlockPos pos) {
-        dropLoot(server, pos, "comarcaconfig:bonanza/triple_coin");
+    @Unique
+    private void comarcaconfig$handleTripleCoin(ServerLevel server, BlockPos pos) {
+        comarcaconfig$dropLoot(server, pos, "comarcaconfig:bonanza/triple_coin");
         server.playSound(null, pos, dev.xylonity.companions.registry.CompanionsSounds.POP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    private void handleDoubleTeddy(ServerLevel server, BlockPos pos) {
-        dropLoot(server, pos, "comarcaconfig:bonanza/double_teddy");
+    @Unique
+    private void comarcaconfig$handleDoubleTeddy(ServerLevel server, BlockPos pos) {
+        comarcaconfig$dropLoot(server, pos, "comarcaconfig:bonanza/double_teddy");
         server.playSound(null, pos, dev.xylonity.companions.registry.CompanionsSounds.POP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    private void handleTripleTeddy(ServerLevel server, BlockPos pos) {
-        dropLoot(server, pos, "comarcaconfig:bonanza/triple_teddy");
+    @Unique
+    private void comarcaconfig$handleTripleTeddy(ServerLevel server, BlockPos pos) {
+        comarcaconfig$dropLoot(server, pos, "comarcaconfig:bonanza/triple_teddy");
         server.playSound(null, pos, dev.xylonity.companions.registry.CompanionsSounds.POP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
 
     }
 
     // Metodos para acceder a efectos de otros mods
 
-    private net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> getModEffect(String location) {
+    @Unique
+    private net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> comarcaconfig$getModEffect(String location) {
         return net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getHolder(
                 ResourceLocation.parse(location)
         ).orElse(null);
@@ -224,7 +231,8 @@ public abstract class FrogBonanzaMixin {
 
     //DOUBLE SKULL
 
-    private void handleDoubleSkull(ServerLevel server, BlockPos pos) {
+    @Unique
+    private void comarcaconfig$handleDoubleSkull(ServerLevel server, BlockPos pos) {
         // Buscamos al jugador más cercano primero, ya que casi todos los eventos lo usarán
         Player player = server.getNearestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, false);
         if (player == null) return; // Si no hay nadie cerca, no hacemos nada
@@ -252,39 +260,71 @@ public abstract class FrogBonanzaMixin {
             }
         }
         switch (selectedEvent) {
-            case "anvil" -> spawnAnvilOnPlayer(server, player);
-            case "lightning" -> strikeLightningOnPlayer(server, player);
-            case "teleport" -> teleportPlayer(player);
-            case "blind" -> blindPlayer(player);
-            case "kill" -> killPlayer(player);
-            case "stun" -> stunPlayer(player);
-            case "backrooms" -> backroomsTp(player);
+            case "anvil" -> comarcaconfig$spawnAnvilOnPlayer(server, player);
+            case "lightning" -> comarcaconfig$strikeLightningOnPlayer(server, player);
+            case "teleport" -> comarcaconfig$teleportPlayer(player);
+            case "blind" -> comarcaconfig$blindPlayer(player);
+            case "kill" -> comarcaconfig$killPlayer(player);
+            case "stun" -> comarcaconfig$stunPlayer(player);
+            case "backrooms" -> comarcaconfig$backroomsTp(player);
         }
     }
 
-    private void spawnAnvilOnPlayer(ServerLevel server, Player player) {
-
+    @Unique
+    private void comarcaconfig$spawnAnvilOnPlayer(ServerLevel server, Player player) {
+        // 1. Mensaje de advertencia
         player.displayClientMessage(
-                Component.literal("¡Mira arriba!").withStyle(ChatFormatting.RED),
-                true // 'true' hace que salga en la Action Bar
+                Component.literal("¡MIRA ARRIBA!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                true
         );
 
-        BlockPos spawnPos = player.blockPosition().above(5);
-        FallingBlockEntity anvil = FallingBlockEntity.fall(server, spawnPos, Blocks.ANVIL.defaultBlockState());
-
-        var stunAnvil = getModEffect("cataclysm:stun");
-
+        // 2. Aplicar el STUN de Cataclysm
+        var stunAnvil = comarcaconfig$getModEffect("cataclysm:stun");
         if (stunAnvil != null) {
-            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(stunAnvil, 200, 1));
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(stunAnvil, 100, 1));
         }
 
-        anvil.setHurtsEntities(2.0f, 40);
-        anvil.dropItem = false; // Para que no suelte el ítem al romperse:
+        try {
+            // Obtenemos el constructor privado de FallingBlockEntity
+            // Los parámetros son: Level, double, double, double, BlockState
+            var constructor = FallingBlockEntity.class.getDeclaredConstructor(
+                    net.minecraft.world.level.Level.class,
+                    double.class,
+                    double.class,
+                    double.class,
+                    net.minecraft.world.level.block.state.BlockState.class
+            );
 
-        server.addFreshEntity(anvil);
+            // La llave maestra para saltar el "private"
+            constructor.setAccessible(true);
+
+            // Instanciamos el yunque
+            FallingBlockEntity anvil = constructor.newInstance(
+                    server,
+                    player.getX(),
+                    player.getY() + 10.0,
+                    player.getZ(),
+                    Blocks.ANVIL.defaultBlockState()
+            );
+
+            // Ahora sí podemos aplicar lo que aprendimos del mod original
+            anvil.time = 1;
+            anvil.disableDrop();
+            anvil.setHurtsEntities(2.0f, 40);
+
+            server.addFreshEntity(anvil);
+
+        } catch (Exception e) {
+            // CAMBIO AQUÍ: Logging robusto en lugar de printStackTrace
+            comarcaconfig$LOGGER.error("[ComarcaConfig] Error al spawnear yunque por reflexión: ", e);
+
+            // Plan B seguro
+            FallingBlockEntity.fall(server, player.blockPosition().above(10), Blocks.ANVIL.defaultBlockState());
+        }
     }
 
-    private void strikeLightningOnPlayer(ServerLevel server, Player player) {
+    @Unique
+    private void comarcaconfig$strikeLightningOnPlayer(ServerLevel server, Player player) {
         LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(server);
         if (bolt != null) {
             bolt.moveTo(player.position()); // Directo al jugador
@@ -292,16 +332,24 @@ public abstract class FrogBonanzaMixin {
         }
     }
 
-    private void teleportPlayer(Player player) {
+    @Unique
+    private void comarcaconfig$teleportPlayer(Player player) {
         // Ejemplo: Teletransportar 100 bloques hacia arriba (caída libre)
         player.teleportTo(player.getX(), player.getY() + 100, player.getZ());
     }
 
-    private void blindPlayer(Player player){
+    @Unique
+    private void comarcaconfig$blindPlayer(Player player){
         player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0));
+        var paranoia = comarcaconfig$getModEffect("hominid:paranoia");
+
+        if (paranoia != null) {
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(paranoia, 200, 1));
+        }
     }
 
-    private void killPlayer(Player player){
+    @Unique
+    private void comarcaconfig$killPlayer(Player player){
         player.displayClientMessage(
                 Component.literal("¡Mala suerte!").withStyle(ChatFormatting.RED),
                 true // 'true' hace que salga en la Action Bar
@@ -309,63 +357,84 @@ public abstract class FrogBonanzaMixin {
         player.kill();
     }
 
-    private void stunPlayer(Player player) {
+    @Unique
+    private void comarcaconfig$stunPlayer(Player player) {
         // Obtenemos el efecto del mod externo
         // Ejemplo: "modid:nombre_del_efecto"
-        var stunsolo = getModEffect("cataclysm:stun");
+        var stunsolo = comarcaconfig$getModEffect("cataclysm:stun");
 
         if (stunsolo != null) {
             // Creamos la instancia: (Efecto, duración en ticks, nivel)
             // 20 ticks = 1 segundo. 600 ticks = 30 segundos.
             // El nivel empieza en 0 (Nivel I)
-            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(stunsolo, 600, 1));
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(stunsolo, 200, 1));
         }
     }
 
-    private void backroomsTp(Player player) {
+    @Unique
+    private void comarcaconfig$backroomsTp(Player player) {
         player.displayClientMessage(
                 Component.literal("¡Bienvenido a los backrooms!").withStyle(ChatFormatting.RED),
-                true // 'true' hace que salga en la Action Bar
+                true
         );
         // Ejemplo: Teletransportar 100 bloques hacia arriba (caída libre)
         player.teleportTo(player.getX(), player.getY() - 3 , player.getZ());
     }
 
     // Metodo auxiliar para obtener entidades de otros mods de forma segura
-    private EntityType<?> getModEntity(String location) {
+    @Unique
+    private EntityType<?> comarcaconfig$getModEntity(String location) {
         return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(location));
     }
 
     //TRIPLE SKULL
 
-    private void handleTripleSkull(ServerLevel server, BlockPos pos) {
-        List<Map.Entry<EntityType<?>, Integer>> mobs = List.of(
-                Map.entry(EntityType.BREEZE, 20),
-                Map.entry(EntityType.ZOMBIE, 50),
-                Map.entry(EntityType.WITHER_SKELETON,40),
-                Map.entry(EntityType.CREEPER, 30),
-                Map.entry(EntityType.WARDEN, 5),
-                Map.entry(getModEntity("companions:cornelius"), 15)
+    @Unique
+    private void comarcaconfig$handleTripleSkull(ServerLevel server, BlockPos pos) {
+        record MobReward(EntityType<?> type, int weight, int count) {}
+        List<MobReward> rewards = List.of(
+                new MobReward(EntityType.ZOMBIE, 50,5),
+                new MobReward(EntityType.WITHER_SKELETON,40,5),
+                new MobReward(EntityType.CAVE_SPIDER,40,5),
+                new MobReward(EntityType.CREEPER, 30,5),
+                new MobReward(EntityType.BREEZE, 20,3),
+                new MobReward(comarcaconfig$getModEntity("royalvariations:royal_creeper"), 15,1),
+                new MobReward(comarcaconfig$getModEntity("royalvariations:royal_zombie"), 15,1),
+                new MobReward(EntityType.WARDEN, 5,1)
         );
 
-        EntityType<?> selected = getWeightedRandom(server.random, mobs);
-        if (selected != null) {
-            selected.spawn(server, pos.above(), MobSpawnType.MOB_SUMMONED);
-        }
-    }
+        // Selección por peso
+        int totalWeight = rewards.stream().mapToInt(MobReward::weight).sum();
+        int r = server.random.nextInt(totalWeight);
 
-    private EntityType<?> getWeightedRandom(RandomSource rand, List<Map.Entry<EntityType<?>, Integer>> list) {
-        // Sumamos todos los pesos (los valores de la derecha)
-        int total = list.stream().mapToInt(Map.Entry::getValue).sum();
-        int r = rand.nextInt(total);
-
-        int count = 0;
-        for (Map.Entry<EntityType<?>, Integer> entry : list) {
-            count += entry.getValue();
-            if (r < count) return entry.getKey(); // Devolvemos la Entidad (el valor de la izquierda)
+        MobReward selected = null;
+        int current = 0;
+        for (MobReward reward : rewards) {
+            current += reward.weight();
+            if (r < current) {
+                selected = reward;
+                break;
+            }
         }
 
-        return null;
+        // Spawneo múltiple
+        if (selected != null && selected.type() != null) {
+            //  posición base arriba de la máquina
+            BlockPos spawnBase = pos.above();
+
+            for (int i = 0; i < selected.count(); i++) {
+                // desplazamiento
+                double offsetX = (server.random.nextDouble() - 0.5) * 1.5;
+                double offsetZ = (server.random.nextDouble() - 0.5) * 1.5;
+
+                net.minecraft.world.phys.Vec3 finalPos = spawnBase.getBottomCenter().add(offsetX, 0, offsetZ);
+
+                selected.type().spawn(server,
+                        BlockPos.containing(finalPos), // Convertimos el Vec3 de vuelta a BlockPos para el spawn
+                        MobSpawnType.MOB_SUMMONED
+                );
+            }
+        }
     }
 
 

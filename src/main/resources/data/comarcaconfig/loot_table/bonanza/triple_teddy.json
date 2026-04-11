@@ -1,14 +1,663 @@
 {
   "pools": [
     {
+      "rolls": {
+        "type": "minecraft:constant",
+        "value": 1
+      },
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 12
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_ingot",
+          "weight": 50,
+          "conditions": [],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 8,
+                "max": 13
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:amethyst_shard",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_ingot",
+          "weight": 40,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:lapis_lazuli",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 10
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cataclysm:ancient_metal_nugget",
+          "weight": 20,
+          "conditions": [],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 6,
+                "max": 12
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cataclysm:ancient_metal_ingot",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_ingot",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_scrap",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 5
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": []
+    },
+    {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:acacia_sign",
-          "weight": 1
+          "name": "backpacked:unlock_token",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:enchanted_golden_apple",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:group",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:diamond_chestplate",
+              "weight": 20,
+              "conditions": [],
+              "functions": [
+                {
+                  "function": "minecraft:enchant_randomly",
+                  "options": "#minecraft:on_traded_equipment"
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:book",
+              "weight": 30,
+              "functions": [
+                {
+                  "function": "minecraft:enchant_randomly",
+                  "enchantments": {},
+                  "options": "#minecraft:treasure"
+                }
+              ]
+            }
+          ],
+          "conditions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:ominous_bottle",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:group",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:splash_potion",
+              "weight": 20,
+              "functions": [
+                {
+                  "function": "minecraft:set_potion",
+                  "id": "minecraft:strong_healing",
+                  "conditions": []
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:splash_potion",
+              "weight": 20,
+              "functions": [
+                {
+                  "function": "minecraft:set_potion",
+                  "id": "minecraft:strong_strength"
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:splash_potion",
+              "weight": 20,
+              "functions": [
+                {
+                  "function": "minecraft:set_potion",
+                  "id": "minecraft:strong_regeneration"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.7
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "kubejs:comi_coin_oro",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 5,
+                "max": 10
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "companions:copper_coin",
+          "weight": 40,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "companions:nether_coin",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "companions:end_coin",
+          "weight": 4,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:totem_of_undying",
+          "weight": 40,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:experience_bottle",
+          "weight": 60,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 5,
+                "max": 12
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:runic_tablet",
+          "weight": 30
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:brimstone_claymore",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:watcher_claymore",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:storms_edge",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:stormbringer",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:bramblethorn",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:watching_warglaive",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:toxic_longsword",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:emberblade",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:hearthflame",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:soulkeeper",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:twisted_blade",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:soulstealer",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:soulrender",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:soulpyre",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:frostfall",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:molten_edge",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:livyatan",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:icewhisper",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:arcanethyst",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:thunderbrand",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:mjolnir",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:slumbering_lichblade",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:waking_lichblade",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:shadowsting",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:dormant_relic",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:whisperwind",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:emberlash",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:waxweaver",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:hiveheart",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:stars_edge",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:wickpiercer",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:tempest",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:flamewind",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:ribboncleaver",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:decaying_relic",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:magiscythe",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:enigma",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:magispear",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:magiblade",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:caelestis",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:wraithfang",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:chompolotl",
+          "weight": 2
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.2
         }
       ]
     }
-  ]
+  ],
+  "functions": []
 }

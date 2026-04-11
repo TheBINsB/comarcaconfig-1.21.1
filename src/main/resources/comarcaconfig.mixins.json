@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.elbin.comarcaconfig.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "FrogBonanzaMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
